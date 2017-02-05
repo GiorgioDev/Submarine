@@ -59,7 +59,7 @@ namespace SubMarine
                 Lhash += BitConverter.ToInt64(buffer, 0);
             }
             input.Close();
-            byte[] result = BitConverter.GetBytes(Lhash);
+            var result = BitConverter.GetBytes(Lhash);
             Array.Reverse(result);
             return result;
         }

@@ -50,8 +50,10 @@ namespace SubMarine
             {
                 lblError.Visibility = Visibility.Visible;
                 lblError.Content = "Select a Folder";
+                return;
             }
 
+            
             var extensionAllowed = new List<string> { ".mkv", ".mp4" };
 
             var filteredFiles = Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories)
@@ -75,7 +77,7 @@ namespace SubMarine
             fileInfo.Hash = movieHashCalculator.ComputeMovieHash(fileName);
             fileInfo.Size = movieHashCalculator.Streamsize;
 
-             connector.SearchSubtitles("es", fileInfo);
+             connector.SearchSubtitles("eng", fileInfo);
         }
 
     }

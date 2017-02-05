@@ -67,11 +67,10 @@ namespace SubMarine
 
         public string ToHexadecimal(byte[] bytes)
         {
-            var hexBuilder = new StringBuilder();
-
+            StringBuilder hexBuilder = new StringBuilder();
             for (int i = 0; i < bytes.Length; i++)
             {
-                hexBuilder.Append(i.ToString("x2"));
+                hexBuilder.Append(bytes[i].ToString("x2"));
             }
             return hexBuilder.ToString();
         }

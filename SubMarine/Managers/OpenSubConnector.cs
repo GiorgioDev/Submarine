@@ -3,23 +3,27 @@ using CookComputing.XmlRpc;
 
 namespace SubMarine.Managers
 {
-    public class OpenSubConnector 
+    public class OpenSubConnector
     {
-        private IOpenSubConnector connector { get; }
+        private IOpenSubConnector _connector { get; }
+
+        private XmlRpcStruct subtitleInfo { get; set; }
 
         public string Token { get; private set; }
 
+
         public OpenSubConnector()
         {
-            connector = (IOpenSubConnector)XmlRpcProxyGen.Create(typeof(IOpenSubConnector));
+            _connector = (IOpenSubConnector)XmlRpcProxyGen.Create(typeof(IOpenSubConnector));
         }
 
-        public void Login(string username, string password, string language, string useragent)
+        public void Login()
         {
             try
             {
-                var result = (XmlRpcStruct) connector.Login(username, password, language, useragent);
-                Token = (string) result["token"];
+                //TODO Extract 
+                var result = (XmlRpcStruct)_connector.Login("", "", "es", "EasySubtitles");
+                Token = (string)result["token"];
             }
             catch (Exception e)
             {
@@ -27,14 +31,24 @@ namespace SubMarine.Managers
             }
         }
 
-        public object SearchSubtitles(string token, XmlRpcStruct[] data)
+        public void SearchSubtitles(string language, FileInfo fileInfo)
         {
-            throw new NotImplementedException();
-        }
+            var detail = new XmlRpcStruct[1];
+            detail[0] = new XmlRpcStruct { { "sublanguageid", language }, { "moviehash", fileInfo.Hash }, { "moviebytesize", fileInfo.Size } };
 
-        public object DownloadSubtitles(string token, int[] data)
+            try
+            {
+                subtitleInfo = (XmlRpcStruct)_connector.SearchSubtitles(Token, detail);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+        
+        public void DownloadSubtitles( int[] data)
         {
-            throw new NotImplementedException();
+        
         }
     }
 }

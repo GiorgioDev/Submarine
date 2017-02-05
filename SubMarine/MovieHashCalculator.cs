@@ -28,16 +28,17 @@ namespace SubMarine
                        : null;
         }
 
-        public byte[] ComputeMovieHash(string filename)
+        public string ComputeMovieHash(string filename)
         {
             byte[] result;
             using (Stream input = File.OpenRead(filename))
             {
                 result = ComputeMovieHash(input);
             }
-            return result;
+            return ToHexadecimal(result);
         }
 
+        
         public byte[] ComputeMovieHash(Stream input)
         {
             Streamsize = input.Length;

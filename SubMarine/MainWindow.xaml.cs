@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
+using SubMarine.Managers;
 
 
 namespace SubMarine
@@ -13,12 +14,21 @@ namespace SubMarine
     /// </summary>
     public partial class MainWindow
     {
+
+        private readonly FileInfo fileInfo;
+
+      private readonly OpenSubConnector connector;
         public MainWindow()
         {
+            this.fileInfo = new FileInfo();
             InitializeComponent();
+            connector = new OpenSubConnector();
+            connector.Login();
+
         }
 
         private string folder { get; set; }
+
         private void ChooseFolder(object sender, RoutedEventArgs e)
         {
             var dialog = new FolderBrowserDialog();
@@ -48,8 +58,8 @@ namespace SubMarine
             .Where(s => extensionAllowed.Contains(Path.GetExtension(s)));
 
            foreach (var file in filteredFiles)
-            {
-
+           {
+               fileInfo.Filename = file;
                 Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(file), "Subs"));
                 ProcessFile(file);
             }
@@ -57,16 +67,16 @@ namespace SubMarine
 
         private void ProcessFile(string fileName)
         {
-
             var di = new DirectoryInfo(fileName);
             di.Attributes &= ~FileAttributes.ReadOnly;
 
             var movieHashCalculator = new MovieHashCalculator();
 
-           var hash = movieHashCalculator.ComputeMovieHash(fileName);
+            fileInfo.Hash = movieHashCalculator.ComputeMovieHash(fileName);
+            fileInfo.Size = movieHashCalculator.Streamsize;
+
+             connector.SearchSubtitles("es", fileInfo);
         }
-
-
 
     }
 }
